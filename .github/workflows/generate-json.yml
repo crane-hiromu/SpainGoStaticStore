@@ -28,12 +28,12 @@ jobs:
           JSON_DATE=${{ github.event.inputs.date }}
           JSON_CONTENT=$(cat <<EOF
           {
-            "date": "$JSON_DATE",
-            "type": 0,
-            "title": "",
-            "outline": "",
-            "description": "",
-            "published": false
+              "date": "$JSON_DATE",
+              "type": 0,
+              "title": "",
+              "outline": "",
+              "description": "",
+              "published": false
           }
           EOF
           )
