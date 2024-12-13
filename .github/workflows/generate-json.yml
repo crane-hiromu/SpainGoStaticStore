@@ -19,7 +19,8 @@ jobs:
         run: |
           DATE=${{ github.event.inputs.date }}
           FORMATTED_DATE=$(echo "$DATE" | sed 's|/||g')
-          echo "FILE_NAME=${FORMATTED_DATE}.json" >> $GITHUB_ENV
+          FILE_NAME="Info/${FORMATTED_DATE}.json"
+          echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
 
       - name: Generate JSON File
         run: |
