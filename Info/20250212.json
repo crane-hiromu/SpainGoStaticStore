@@ -1,8 +1,8 @@
 {
     "date": "2025/02/12",
-    "type": 0,
-    "title": "",
-    "outline": "",
+    "type": 100,
+    "title": "test",
+    "outline": "test",
     "description": "",
-    "published": false
+    "published": true
 }
