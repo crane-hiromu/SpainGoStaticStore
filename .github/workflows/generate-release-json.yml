@@ -1,4 +1,4 @@
-name: Generate JSON File
+name: Generate Release JSON File
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
       date:
         description: 'Date (e.g., 2024/02/07)'
         required: false
-      type:
-        description: 'Type (e.g., 101)'
+      version:
+        description: 'Version (e.g., 1.32.0)'
         required: false
 
 jobs:
@@ -24,21 +24,21 @@ jobs:
           if [ -z "$DATE" ]; then DATE=$(date +'%Y/%m/%d'); fi
           FORMATTED_DATE=$(echo "$DATE" | sed 's|/||g')
           FILE_NAME="Info/${FORMATTED_DATE}.json"
-          TYPE=${{ github.event.inputs.type || '0' }}
+          VERSION=${{ github.event.inputs.version || '1.1' }}
           
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
           echo "JSON_DATE=${DATE}" >> $GITHUB_ENV
-          echo "JSON_TYPE=${TYPE}" >> $GITHUB_ENV
+          echo "JSON_VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Generate JSON File
         run: |
           JSON_CONTENT=$(cat <<EOF
           {
               "date": "${JSON_DATE}",
-              "type": ${JSON_TYPE},
-              "title": "",
-              "outline": "",
-              "description": "",
+              "type": 101,
+              "title": "アプリのアップデート",
+              "outline": "新しいバージョン ${JSON_VERSION} がリリースされました",
+              "description": "**【アップデート内容】**\n- xxx\n\n**【バージョン】**\nバージョン：${JSON_VERSION}\nApp Store：[スペインゴ](https://apps.apple.com/jp/app/%E3%82%B9%E3%83%9A%E3%82%A4%E3%83%B3%E3%82%B4/id6469019716)",
               "published": false
           }
           EOF
