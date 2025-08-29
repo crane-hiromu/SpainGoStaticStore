@@ -13,6 +13,9 @@
     "cámara",
     "ventilador",
     "lámpara",
-    "aire acondicionado"
+    "aire acondicionado",
+    "teclado",
+    "impresora",
+    "escáner",
   ]
 }
