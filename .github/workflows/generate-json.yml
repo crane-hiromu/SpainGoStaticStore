@@ -23,8 +23,16 @@ jobs:
           DATE=${{ github.event.inputs.date || '' }}
           if [ -z "$DATE" ]; then DATE=$(date +'%Y/%m/%d'); fi
           FORMATTED_DATE=$(echo "$DATE" | sed 's|/||g')
-          FILE_NAME="Info/${FORMATTED_DATE}.json"
+          BASE_FILE_NAME="Info/${FORMATTED_DATE}"
+          FILE_NAME="${BASE_FILE_NAME}.json"
           TYPE=${{ github.event.inputs.type || '0' }}
+          
+          # Check if file exists and add version suffix if needed
+          VERSION=2
+          while [ -f "$FILE_NAME" ]; do
+            FILE_NAME="${BASE_FILE_NAME}_v${VERSION}.json"
+            VERSION=$((VERSION + 1))
+          done
           
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
           echo "JSON_DATE=${DATE}" >> $GITHUB_ENV
