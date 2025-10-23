@@ -30,7 +30,8 @@ jobs:
           INPUT_VERSION="${{ github.event.inputs.version || '' }}"
           if [ -z "$INPUT_VERSION" ]; then
             # Find the latest release (type 101) and extract version
-            for json_file in $(ls -1 Info/*.json | sort -r); do
+            mapfile -d '' sorted_json_files < <(find Info -maxdepth 1 -name '*.json' -print0 | sort -rz)
+            for json_file in "${sorted_json_files[@]}"; do
               file_type=$(jq -r '.type' "$json_file" 2>/dev/null || echo "")
               if [ "$file_type" = "101" ]; then
                 # Extract version from outline field
