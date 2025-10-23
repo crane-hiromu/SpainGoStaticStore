@@ -32,10 +32,18 @@ jobs:
             # Find the latest release (type 101) and extract version
             mapfile -d '' sorted_json_files < <(find Info -maxdepth 1 -name '*.json' -print0 | sort -rz)
             for json_file in "${sorted_json_files[@]}"; do
-              file_type=$(jq -r '.type' "$json_file" 2>/dev/null || echo "")
+              file_type=$(jq -r '.type' "$json_file" 2>/dev/null)
+              if [ $? -ne 0 ]; then
+                echo "Warning: Failed to parse .type from $json_file (malformed JSON?)" >&2
+                continue
+              fi
               if [ "$file_type" = "101" ]; then
                 # Extract version from outline field
-                outline=$(jq -r '.outline' "$json_file" 2>/dev/null || echo "")
+                outline=$(jq -r '.outline' "$json_file" 2>/dev/null)
+                if [ $? -ne 0 ]; then
+                  echo "Warning: Failed to parse .outline from $json_file (malformed JSON?)" >&2
+                  continue
+                fi
                 if [[ $outline =~ 新しいバージョン\ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
                   prev_version="${BASH_REMATCH[1]}"
                   # Split version into major.minor.patch
