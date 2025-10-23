@@ -8,7 +8,7 @@ on:
         required: false
       version:
         description: 'Version (e.g., 1.32.0)'
-        required: true
+        required: false
 
 jobs:
   generate-json:
@@ -25,7 +25,47 @@ jobs:
           FORMATTED_DATE=$(echo "$DATE" | sed 's|/||g')
           BASE_FILE_NAME="Info/${FORMATTED_DATE}"
           FILE_NAME="${BASE_FILE_NAME}.json"
-          VERSION=${{ github.event.inputs.version || '1.1' }}
+          
+          # Auto-detect version if not provided
+          INPUT_VERSION="${{ github.event.inputs.version || '' }}"
+          if [ -z "$INPUT_VERSION" ]; then
+            # Find the latest release (type 101) and extract version
+            mapfile -d '' sorted_json_files < <(find Info -maxdepth 1 -name '*.json' -print0 | sort -rz)
+            for json_file in "${sorted_json_files[@]}"; do
+              file_type=$(jq -r '.type' "$json_file" 2>/dev/null)
+              if [ $? -ne 0 ]; then
+                echo "Warning: Failed to parse .type from $json_file (malformed JSON?)" >&2
+                continue
+              fi
+              if [ "$file_type" = "101" ]; then
+                # Extract version from outline field
+                outline=$(jq -r '.outline' "$json_file" 2>/dev/null)
+                if [ $? -ne 0 ]; then
+                  echo "Warning: Failed to parse .outline from $json_file (malformed JSON?)" >&2
+                  continue
+                fi
+                if [[ $outline =~ 新しいバージョン\ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+                  prev_version="${BASH_REMATCH[1]}"
+                  # Split version into major.minor.patch
+                  IFS='.' read -r major minor patch <<< "$prev_version"
+                  # Increment minor version
+                  new_minor=$((minor + 1))
+                  VERSION="${major}.${new_minor}.0"
+                  echo "Auto-detected previous version: $prev_version"
+                  echo "New version: $VERSION"
+                  break
+                fi
+              fi
+            done
+            # Fallback if no version found
+            if [ -z "$VERSION" ]; then
+              VERSION="1.1.0"
+              echo "No previous release found, using default version: $VERSION"
+            fi
+          else
+            VERSION="$INPUT_VERSION"
+            echo "Using manually provided version: $VERSION"
+          fi
           
           # Check if file exists and add version suffix if needed
           FILE_VERSION=2
