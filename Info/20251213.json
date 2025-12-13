@@ -3,6 +3,6 @@
     "type": 101,
     "title": "アプリのアップデート",
     "outline": "新しいバージョン 1.45.0 がリリースされました",
-    "description": "**【アップデート内容】**\n- xxx\n\n**【バージョン】**\nバージョン：1.45.0\nApp Store：[スペインゴ](https://apps.apple.com/jp/app/%E3%82%B9%E3%83%9A%E3%82%A4%E3%83%B3%E3%82%B4/id6469019716)",
-    "published": false
+    "description": "**【アップデート内容】**\n- ダークモードの設定をコントロールできるようになりました\n\n**【バージョン】**\nバージョン：1.45.0\nApp Store：[スペインゴ](https://apps.apple.com/jp/app/%E3%82%B9%E3%83%9A%E3%82%A4%E3%83%B3%E3%82%B4/id6469019716)",
+    "published": true
 }
